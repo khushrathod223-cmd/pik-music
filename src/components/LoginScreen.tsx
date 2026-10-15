@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Smartphone, Monitor, Sparkles, QrCode } from 'lucide-react';
+import { Smartphone, Monitor, Sparkles, QrCode, Download } from 'lucide-react';
 import { LiquidWaterGlassLogo } from './LiquidWaterGlassLogo';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { GuestButton } from './GuestButton';
@@ -90,24 +90,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Direct Download .APK button */}
+          {/* Direct Download .APK */}
           <a
             href="/pik-music-scui.apk"
-            download="pik-music-scui.apk"
-            className="px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-[#00e5ff] hover:bg-[#38bdf8] text-slate-950 border border-cyan-300 shadow-[0_0_15px_rgba(0,229,255,0.6)] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
-            title="Download .APK installer for your Android device"
+            download="PiK-Music-SCuII.apk"
+            className="px-3 py-1.5 rounded-full text-[11px] font-bold bg-gradient-to-r from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 shadow-[0_0_12px_rgba(0,229,255,0.4)] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+            title="Download signed Android APK directly (1.8 MB)"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5 text-slate-950" />
             <span>Download .APK</span>
           </a>
 
-          {/* QR code / phone guide modal trigger */}
+          {/* Add to Phone / QR Code modal action */}
           <button
             onClick={() => setIsPhoneModalOpen(true)}
-            className="p-1.5 rounded-full bg-slate-900/80 border border-cyan-500/40 text-cyan-200 hover:text-white transition-colors cursor-pointer"
-            title="Show Phone QR Code & Instructions"
+            className="px-3 py-1.5 rounded-full text-[11px] font-semibold bg-slate-900/80 hover:bg-slate-800 text-cyan-200 border border-cyan-400/40 shadow-[0_0_10px_rgba(0,229,255,0.2)] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+            title="Scan QR Code or install PWA"
           >
-            <QrCode className="w-4 h-4" />
+            <QrCode className="w-3.5 h-3.5 text-cyan-300" />
+            <span className="hidden sm:inline">Phone QR</span>
           </button>
 
           {/* Viewport switch mode */}
