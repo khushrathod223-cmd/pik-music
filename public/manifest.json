@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "PiK Music SCuII",
+  "short_name": "PiK Music",
+  "description": "Cyber-neon liquid glass music streaming and login interface.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#020617",
+  "theme_color": "#00e5ff",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

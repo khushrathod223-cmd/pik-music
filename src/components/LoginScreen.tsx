@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Smartphone, Monitor, Sparkles } from 'lucide-react';
+import { Smartphone, Monitor, Sparkles, QrCode } from 'lucide-react';
 import { LiquidWaterGlassLogo } from './LiquidWaterGlassLogo';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { GuestButton } from './GuestButton';
 import { AudioWaveform } from './AudioWaveform';
 import { TermsModal } from './TermsModal';
 import { GoogleAuthDialog } from './GoogleAuthDialog';
+import { AddToPhoneModal } from './AddToPhoneModal';
 import { AuthUser, GoogleUser, GuestUser } from '../types/auth';
 
 // Studio background images generated to match the uploaded visual references
@@ -22,6 +23,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('auto');
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isGoogleDialogOpen, setIsGoogleDialogOpen] = useState(false);
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
   const [isGuestLoading, setIsGuestLoading] = useState(false);
 
   // Handle Google Sign In click
@@ -78,8 +80,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         <div className="absolute inset-0 bg-radial from-blue-900/20 via-transparent to-black/80" />
       </div>
 
-      {/* Top Bar with Device Preview Switcher (Allows testing Portrait & Landscape seamlessly) */}
-      <header className="relative z-20 w-full px-4 py-3 flex items-center justify-between">
+      {/* Top Bar with Device Preview Switcher & Install on Phone */}
+      <header className="relative z-20 w-full px-4 py-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_8px_#00e5ff]" />
           <span className="text-xs font-semibold tracking-wider text-cyan-200 uppercase">
@@ -87,44 +89,66 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
           </span>
         </div>
 
-        {/* Viewport switch mode */}
-        <div className="flex items-center gap-1 p-1 rounded-full bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md">
-          <button
-            onClick={() => setViewMode('auto')}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
-              viewMode === 'auto'
-                ? 'bg-[#00e5ff] text-slate-950 font-bold shadow-[0_0_8px_#00e5ff]'
-                : 'text-slate-300 hover:text-white'
-            }`}
-            title="Auto detect responsive screen size"
+        <div className="flex items-center gap-2">
+          {/* Direct Download .APK button */}
+          <a
+            href="/pik-music-scui.apk"
+            download="pik-music-scui.apk"
+            className="px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-[#00e5ff] hover:bg-[#38bdf8] text-slate-950 border border-cyan-300 shadow-[0_0_15px_rgba(0,229,255,0.6)] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+            title="Download .APK installer for your Android device"
           >
-            <Sparkles className="w-3 h-3" />
-            <span>Responsive</span>
-          </button>
+            <Download className="w-3.5 h-3.5" />
+            <span>Download .APK</span>
+          </a>
+
+          {/* QR code / phone guide modal trigger */}
           <button
-            onClick={() => setViewMode('mobile')}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
-              viewMode === 'mobile'
-                ? 'bg-[#00e5ff] text-slate-950 font-bold shadow-[0_0_8px_#00e5ff]'
-                : 'text-slate-300 hover:text-white'
-            }`}
-            title="Force mobile portrait layout"
+            onClick={() => setIsPhoneModalOpen(true)}
+            className="p-1.5 rounded-full bg-slate-900/80 border border-cyan-500/40 text-cyan-200 hover:text-white transition-colors cursor-pointer"
+            title="Show Phone QR Code & Instructions"
           >
-            <Smartphone className="w-3 h-3" />
-            <span>Mobile</span>
+            <QrCode className="w-4 h-4" />
           </button>
-          <button
-            onClick={() => setViewMode('landscape')}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
-              viewMode === 'landscape'
-                ? 'bg-[#00e5ff] text-slate-950 font-bold shadow-[0_0_8px_#00e5ff]'
-                : 'text-slate-300 hover:text-white'
-            }`}
-            title="Force landscape split layout"
-          >
-            <Monitor className="w-3 h-3" />
-            <span>Landscape</span>
-          </button>
+
+          {/* Viewport switch mode */}
+          <div className="flex items-center gap-1 p-1 rounded-full bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md">
+            <button
+              onClick={() => setViewMode('auto')}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
+                viewMode === 'auto'
+                  ? 'bg-[#00e5ff] text-slate-950 font-bold shadow-[0_0_8px_#00e5ff]'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+              title="Auto detect responsive screen size"
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Auto</span>
+            </button>
+            <button
+              onClick={() => setViewMode('mobile')}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
+                viewMode === 'mobile'
+                  ? 'bg-[#00e5ff] text-slate-950 font-bold shadow-[0_0_8px_#00e5ff]'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+              title="Force mobile portrait layout"
+            >
+              <Smartphone className="w-3 h-3" />
+              <span>Mobile</span>
+            </button>
+            <button
+              onClick={() => setViewMode('landscape')}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
+                viewMode === 'landscape'
+                  ? 'bg-[#00e5ff] text-slate-950 font-bold shadow-[0_0_8px_#00e5ff]'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+              title="Force landscape split layout"
+            >
+              <Monitor className="w-3 h-3" />
+              <span>Landscape</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -224,6 +248,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         isOpen={isGoogleDialogOpen}
         onClose={() => setIsGoogleDialogOpen(false)}
         onSuccess={handleGoogleSuccess}
+      />
+      <AddToPhoneModal
+        isOpen={isPhoneModalOpen}
+        onClose={() => setIsPhoneModalOpen(false)}
       />
     </div>
   );
