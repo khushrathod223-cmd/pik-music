@@ -1,0 +1,6 @@
+{
+  "name": "PiK SCUI Music",
+  "description": "Cyber-neon liquid glass music streaming and login interface with Google Sign-In, Guest mode, and responsive layout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
