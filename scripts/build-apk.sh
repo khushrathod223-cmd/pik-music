@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== 1. Building Web Assets with Vite ==="
+echo "=== 1. Building Web Assets with Vite (with relative base ./ ) ==="
 npm run build
 
 echo "=== 2. Setting up APK build workspace ==="
@@ -50,6 +50,7 @@ cat << 'EOF' > apk-build/AndroidManifest.xml
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
+        android:usesCleartextTraffic="true"
         android:supportsRtl="true">
         <activity
             android:name=".MainActivity"
@@ -65,14 +66,17 @@ cat << 'EOF' > apk-build/AndroidManifest.xml
 </manifest>
 EOF
 
-# Create MainActivity.java
+# Create MainActivity.java with dark cyberpunk background and universal file access
 cat << 'EOF' > apk-build/src/com/pik/music/scui/MainActivity.java
 package com.pik.music.scui;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -88,16 +92,37 @@ public class MainActivity extends Activity {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#020617")));
 
         webView = new WebView(this);
+        webView.setBackgroundColor(Color.parseColor("#020617"));
+
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
-        settings.setAllowFileAccess(true);
         settings.setDatabaseEnabled(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                if (failingUrl != null && failingUrl.startsWith("file:///")) {
+                    view.loadUrl("https://ais-pre-gt2ui7crvxp5joqc3hske6-766352146426.asia-southeast1.run.app");
+                }
+            }
+        });
+
         webView.loadUrl("file:///android_asset/index.html");
 
         setContentView(webView);
